@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: photo-marks-frontend
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - mern-network
+
+  backend:
+    build: ./backend
+    container_name: photo-marks-backend
+    ports:
+      - '5000:5000'
+    depends_on:
+      - database
+    networks:
+      - mern-network
+
+  database:
+    image: mongo
+    container_name: photo-marks-database
+    ports:
+      - '27017:27017'
+    networks:
+      - mern-network
+
+  nginx:
+    build: ./nginx
+    container_name: photo-marks-nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - mern-network
+
+networks:
+  mern-network:
+    driver: bridge
